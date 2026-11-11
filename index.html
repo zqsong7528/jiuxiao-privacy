@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=1024, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#14201f" />
+  <title>九霄夺城</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314201f'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' fill='%23d8a94a'%3E%E5%9F%8E%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./src/ui/hud.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- 资源图标（内联 SVG 符号，供资源栏等处 <use> 引用） -->
+  <svg id="res-icons" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+    <symbol id="ico-spirit" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="g-spirit" x1="0" y1="0" x2=".25" y2="1">
+          <stop offset="0" stop-color="#e8feff" />
+          <stop offset=".42" stop-color="#6fdcf2" />
+          <stop offset="1" stop-color="#1a7fa8" />
+        </linearGradient>
+      </defs>
+      <path d="M12 2.2 19.9 8 16.9 20.2H7.1L4.1 8Z" fill="url(#g-spirit)" stroke="#0c475c" stroke-opacity=".55" stroke-width=".9" stroke-linejoin="round" />
+      <path d="M12 2.2 15.4 8 12 20.2 8.6 8Z" fill="#f4ffff" opacity=".55" />
+      <path d="M12 2.2 19.9 8H4.1Z" fill="#bff5ff" opacity=".45" />
+    </symbol>
+    <symbol id="ico-material" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="g-leaf-a" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#d5f8a4" />
+          <stop offset="1" stop-color="#3f923c" />
+        </linearGradient>
+        <linearGradient id="g-leaf-b" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#9ce36f" />
+          <stop offset="1" stop-color="#26692f" />
+        </linearGradient>
+      </defs>
+      <path d="M12 21.2V9.4" stroke="#2c6b36" stroke-width="1.9" stroke-linecap="round" />
+      <path d="M12 14.4C6.7 13.8 3.8 10.7 3.3 5.3c5.1.6 8.1 3.8 8.7 9.1Z" fill="url(#g-leaf-a)" stroke="#245b2b" stroke-opacity=".45" stroke-width=".8" stroke-linejoin="round" />
+      <path d="M12 10.8c.4-4.4 3.3-7.2 8-7.7-.5 4.8-3.3 7.5-8 7.7Z" fill="url(#g-leaf-b)" stroke="#245b2b" stroke-opacity=".45" stroke-width=".8" stroke-linejoin="round" />
+      <circle cx="12" cy="18.4" r="1.5" fill="#f0c552" stroke="#a8761f" stroke-width=".6" />
+    </symbol>
+    <symbol id="ico-ore" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="g-ore" x1="0" y1="0" x2=".3" y2="1">
+          <stop offset="0" stop-color="#fff3c4" />
+          <stop offset=".5" stop-color="#f5b947" />
+          <stop offset="1" stop-color="#a45d10" />
+        </linearGradient>
+        <linearGradient id="g-ore-2" x1="0" y1="0" x2=".3" y2="1">
+          <stop offset="0" stop-color="#ffe9a8" />
+          <stop offset="1" stop-color="#c97c16" />
+        </linearGradient>
+      </defs>
+      <path d="M6.6 20.6 4.1 12.1 7.4 7.7l2.3 2.2-.2 10.7Z" fill="url(#g-ore-2)" opacity=".85" stroke="#7a4409" stroke-opacity=".45" stroke-width=".7" stroke-linejoin="round" />
+      <path d="M17.4 20.6 19.9 11.1 16.9 7.5l-2.3 2.2.2 10.9Z" fill="url(#g-ore-2)" opacity=".85" stroke="#7a4409" stroke-opacity=".45" stroke-width=".7" stroke-linejoin="round" />
+      <path d="M12 20.6 9 8.3 12 3 15 8.3Z" fill="url(#g-ore)" stroke="#7a4409" stroke-opacity=".5" stroke-width=".8" stroke-linejoin="round" />
+      <path d="M12 3v17.6M9 8.3 12 11.2l3-2.9" fill="none" stroke="#fffbe8" stroke-opacity=".65" stroke-width=".9" />
+    </symbol>
+    <symbol id="ico-pill" viewBox="0 0 24 24">
+      <defs>
+        <radialGradient id="g-pill" cx=".35" cy=".28" r=".85">
+          <stop offset="0" stop-color="#ffd9b0" />
+          <stop offset=".4" stop-color="#e45a40" />
+          <stop offset="1" stop-color="#7f1717" />
+        </radialGradient>
+      </defs>
+      <circle cx="12" cy="12.2" r="7.8" fill="url(#g-pill)" stroke="#5c1112" stroke-width=".8" />
+      <path d="M5.2 15.8a7.8 7.8 0 0 0 12-10.6" fill="none" stroke="#f3d07c" stroke-width="1.5" stroke-linecap="round" />
+      <ellipse cx="9.4" cy="9" rx="2.1" ry="1.5" fill="#fff4e2" opacity=".72" transform="rotate(-28 9.4 9)" />
+    </symbol>
+    <symbol id="ico-jade" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="g-jade" x1="0" y1="0" x2=".35" y2="1">
+          <stop offset="0" stop-color="#dcffee" />
+          <stop offset=".48" stop-color="#5ad9ab" />
+          <stop offset="1" stop-color="#0d8068" />
+        </linearGradient>
+      </defs>
+      <path d="M12 2.6 20.2 7.3v9.4L12 21.4 3.8 16.7V7.3Z" fill="url(#g-jade)" stroke="#075a49" stroke-opacity=".55" stroke-width=".9" stroke-linejoin="round" />
+      <path d="M12 2.6 20.2 7.3 12 8.9 3.8 7.3Z" fill="#eafff6" opacity=".4" />
+      <circle cx="12" cy="12.6" r="3.3" fill="#0b3f36" />
+      <circle cx="12" cy="12.6" r="3.3" fill="none" stroke="#b9ffe4" stroke-opacity=".7" stroke-width=".7" />
+      <path d="M5 8.6 12 12l7-3.4" fill="none" stroke="#f2fff9" stroke-opacity=".35" stroke-width=".8" />
+    </symbol>
+    <symbol id="ico-quick-move" viewBox="0 0 24 24">
+      <defs>
+        <linearGradient id="g-qm-ring" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffe9a8" />
+          <stop offset=".55" stop-color="#e8b24c" />
+          <stop offset="1" stop-color="#a9660f" />
+        </linearGradient>
+        <linearGradient id="g-qm-arrow" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#c6fff2" />
+          <stop offset=".5" stop-color="#4fd6bd" />
+          <stop offset="1" stop-color="#0f7f70" />
+        </linearGradient>
+      </defs>
+      <path d="M12.4 3.1a8.9 8.9 0 1 0 8.5 11.4" fill="none" stroke="url(#g-qm-ring)" stroke-width="1.9" stroke-linecap="round" />
+      <path d="M5 8.7a9 9 0 0 1 2.9-4.2" fill="none" stroke="url(#g-qm-ring)" stroke-width="1.5" stroke-linecap="round" opacity=".6" />
+      <path d="M8.9 12H17M13.4 8.2 17.2 12l-3.8 3.8" fill="none" stroke="url(#g-qm-arrow)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+  </svg>
+  <div id="app">
+    <canvas id="scene"></canvas>
+    <div id="grain"></div>
+
+    <header id="hud-top" class="hud">
+      <!-- 左上：头像 / 境界 / 战力 -->
+      <div id="hud-topleft">
+        <div class="avatar-frame">
+          <div class="avatar" id="player-avatar">枢</div>
+          <span id="player-level" class="avatar-level">1</span>
+        </div>
+        <div class="tl-meta">
+          <div class="tl-line">
+            <span id="player-name" class="tl-name">青梧掌门</span>
+          </div>
+          <div class="tl-line">
+            <span class="power-label">战力</span><b id="player-power">0</b>
+          </div>
+        </div>
+      </div>
+
+      <!-- 快速转移洞府（头像与资源栏正中间 → 打开指令面板 → 申请转移 → 选点直达） -->
+      <button id="btn-quick-move" class="quick-move-btn" aria-label="快速转移洞府">
+        <i><svg class="qm-ico" aria-hidden="true"><use href="#ico-quick-move" /></svg></i>
+        <span>快速转移</span>
+        <b id="qm-token-badge">3/3</b>
+      </button>
+
+      <!-- 正上：资源栏 + 服务器状态 -->
+      <div id="hud-resbar">
+        <div class="res-group">
+          <div class="res r-spirit" title="灵石"><i class="ri"><svg class="res-ico" aria-hidden="true"><use href="#ico-spirit" /></svg></i><b id="res-spirit">0</b></div>
+          <div class="res r-material" title="灵材"><i class="ri"><svg class="res-ico" aria-hidden="true"><use href="#ico-material" /></svg></i><b id="res-material">0</b></div>
+          <div class="res r-ore" title="灵矿"><i class="ri"><svg class="res-ico" aria-hidden="true"><use href="#ico-ore" /></svg></i><b id="res-ore">0</b></div>
+          <div class="res r-pill" title="丹药"><i class="ri"><svg class="res-ico" aria-hidden="true"><use href="#ico-pill" /></svg></i><b id="res-pill">0</b></div>
+        </div>
+        <div id="server-status">
+          <i class="status-dot"></i>
+          <span id="server-name">青云城</span>
+          <em>|</em>
+          <span id="server-time">第 1 天 08:00</span>
+        </div>
+        <div class="res-group">
+          <div class="res r-jade" title="仙玉"><i class="ri"><svg class="res-ico" aria-hidden="true"><use href="#ico-jade" /></svg></i><b id="res-jade">0</b></div>
+        </div>
+      </div>
+
+    </header>
+
+    <!-- 城市通报：主城官职变动 / 宗门任命时屏幕上方的滚动播报 -->
+    <div id="city-ticker" class="hidden" aria-live="polite">
+      <span class="ct-seal">城</span>
+      <div class="ct-track"><span class="ct-text" id="city-ticker-text"></span></div>
+    </div>
+
+    <!-- 快速转移：申请通过后的预落地浮窗（紧凑单行，避免遮挡地图中央的落地范围） -->
+    <section id="quick-move-card" class="hidden" aria-label="洞府转移">
+      <div class="qm-title">
+        <b>洞府转移</b>
+      </div>
+      <div class="qm-token">
+        <i>令</i>
+        <span id="qm-token-count">3 / 1</span>
+      </div>
+      <label class="qm-check">
+        <input id="qm-show-range" type="checkbox" checked />
+        <span>落地范围</span>
+      </label>
+      <button id="qm-transfer" class="qm-go">转 移</button>
+      <button id="qm-close" class="qm-close" aria-label="取消转移">×</button>
+      <p id="qm-tip" class="qm-tip">拖动发光范围选择落点，点击「转移」立即传送。</p>
+    </section>
+
+    <!-- 洞府崩塌：打烂后必须先点【重新建造】，洞府才会重新出现在地图上 -->
+    <section id="collapse-card" class="hidden" aria-label="洞府崩塌">
+      <header class="cc-head">
+        <b>洞 府 崩 塌</b>
+        <em>山门倾覆 · 灵脉离散</em>
+      </header>
+      <div class="cc-body">
+        <div class="cc-art" aria-hidden="true">
+          <svg viewBox="0 0 320 132" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <linearGradient id="cc-sea" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#12312c" />
+                <stop offset="1" stop-color="#07100e" />
+              </linearGradient>
+              <linearGradient id="cc-glow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#ffe2a0" stop-opacity="0.5" />
+                <stop offset="1" stop-color="#ffe2a0" stop-opacity="0" />
+              </linearGradient>
+            </defs>
+            <rect width="320" height="132" fill="url(#cc-sea)" />
+            <g opacity="0.45" stroke="#2d5c50" stroke-width="1">
+              <path d="M0 98 H320" />
+              <path d="M0 112 H320" />
+            </g>
+            <!-- 废墟：断裂的殿宇与残火 -->
+            <g transform="translate(76 58)">
+              <path d="M-32 24 L32 24 L24 13 L-24 13 Z" fill="#243b35" stroke="#4d6a60" />
+              <path d="M-21 13 L-9 4 L1 10 L12 2 L21 10 L25 13 Z" fill="#384f47" stroke="#6a857b" />
+              <path d="M-14 13 L-14 28 M11 13 L11 28" stroke="#162622" stroke-width="3" />
+              <circle cx="-2" cy="-8" r="3" fill="#e0694f" opacity="0.75" />
+              <circle cx="7" cy="-15" r="2" fill="#e0694f" opacity="0.45" />
+            </g>
+            <g fill="#ffe2a0" opacity="0.7">
+              <circle cx="50" cy="40" r="1.6" />
+              <circle cx="96" cy="32" r="1.2" />
+              <circle cx="38" cy="66" r="1" />
+              <circle cx="120" cy="50" r="1.4" />
+            </g>
+            <!-- 转移弧线与新址 -->
+            <path
+              d="M108 72 C 152 20, 196 22, 238 56"
+              fill="none"
+              stroke="#7fd6a8"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-dasharray="0 9"
+            />
+            <path d="M231 50 L244 58 L229 65" fill="none" stroke="#7fd6a8" stroke-width="3" stroke-linejoin="round" />
+            <g transform="translate(250 76)">
+              <circle r="18" fill="url(#cc-glow)" />
+              <circle r="9" fill="#ffe2a0" opacity="0.22" />
+              <path d="M0 -8 L8 0 L0 8 L-8 0 Z" fill="#ffe2a0" />
+            </g>
+          </svg>
+        </div>
+        <p class="cc-text">你的洞府已被打烂，山门化作一片废墟。</p>
+        <p class="cc-sub">点击下方按钮，在附近空地重新立起洞府。</p>
+        <button id="cc-rebuild" class="cc-go">重 新 建 造</button>
+      </div>
+    </section>
+
+    <div id="world-hud" class="hidden">
+      <div id="base-alert" class="hidden">洞府遭受攻击</div>
+    </div>
+
+    <!-- 新手引导：常驻当前任务（右侧），点【任务】看完整流程 -->
+    <aside id="quest-track" class="hidden" aria-label="新手引导">
+      <header class="qt-head">
+        <i class="qt-seal">引</i>
+        <div class="qt-head-txt">
+          <b>新手引导</b>
+          <em id="qt-step">第 1 步 / 共 22 步</em>
+        </div>
+        <span id="qt-count" class="qt-count">1/22</span>
+      </header>
+      <div class="qt-chapter" id="qt-chapter"></div>
+      <div class="qt-title" id="qt-title"></div>
+      <p class="qt-goal" id="qt-goal"></p>
+      <p class="qt-hint" id="qt-hint"></p>
+      <div class="qt-bar"><i id="qt-fill"></i></div>
+      <div class="qt-foot">
+        <button id="qt-go" class="qt-btn gold">查看任务</button>
+        <button id="qt-all" class="qt-btn">全部任务</button>
+      </div>
+    </aside>
+
+    <div id="targeting-tip" class="hidden">点击地面释放</div>
+    <div id="marquee" class="hidden"></div>
+
+    <!-- 右下：部队卡片（常驻，点击选中全队） -->
+    <div id="squad-cards"></div>
+
+    <!-- 队伍：右侧滑出的修士列表（常驻桌面卡牌上的修士，服丹回血 / 复活） -->
+    <section id="troop-panel" class="hidden" aria-label="队伍">
+      <div class="tp-mask"></div>
+      <aside class="tp-sheet">
+        <header class="tp-head">
+          <h2>队 伍</h2>
+          <div class="tp-pill"><i>丹</i><b id="tp-pill">0</b></div>
+          <button id="tp-close" class="tp-close" aria-label="关闭">×</button>
+        </header>
+        <div class="tp-cols"><span>修士</span><span>气血</span><span>丹药</span></div>
+        <div id="tp-list" class="tp-list"></div>
+        <footer class="tp-foot">
+          <span id="tp-hint">队伍里始终是桌面卡牌上的 4 名修士 · 点击任意修士即可更换出战；招募新弟子请到【修士】名册库</span>
+        </footer>
+      </aside>
+    </section>
+
+    <!-- 队伍：全屏更换出战（点击队伍里的任意修士打开，用其他弟子替换该位置） -->
+    <section id="lineup-panel" class="hidden" aria-label="更换出战">
+      <div class="lu-mask"></div>
+      <div class="lu-sheet">
+        <header class="lu-head">
+          <div class="lu-title"><i>阵</i><h2>出 战 阵 容</h2></div>
+          <div class="lu-target"><em>更换目标</em><b id="lu-target">—</b></div>
+          <button id="lu-close" class="lu-close" aria-label="关闭">×</button>
+        </header>
+        <div id="lu-slots" class="lu-slots"></div>
+        <div class="lu-sub">
+          <b>可选修士</b>
+          <em id="lu-count">0 人</em>
+          <span>点击任意修士替换上方选中的位置</span>
+        </div>
+        <div id="lu-grid" class="lu-grid"></div>
+        <footer class="lu-foot">替换后原修士会从场上回到洞府驻守，新阵容立即生效</footer>
+      </div>
+    </section>
+
+    <!-- 抽奖：全屏祈愿（法器 / 修士 · 单抽 / 十连 · 跳过动画） -->
+    <section id="gacha-panel" class="hidden" aria-label="天机祈愿">
+      <div class="gc-bg" aria-hidden="true"></div>
+
+      <header class="gc-head">
+        <div class="gc-title">
+          <i>祈</i>
+          <div>
+            <h2>天 机 祈 愿</h2>
+            <p>洞府法脉 · 以仙玉换取法器与修士</p>
+          </div>
+        </div>
+        <div class="gc-jade" title="剩余仙玉">
+          <i><svg aria-hidden="true"><use href="#ico-jade" /></svg></i>
+          <b id="gc-jade">0</b>
+        </div>
+        <button id="gc-close" class="gc-close" aria-label="关闭">×</button>
+      </header>
+
+      <div class="gc-body">
+        <aside class="gc-rail">
+          <button class="gc-box active" data-gc-tab="artifact">
+            <span class="gc-box-art"><img src="./assets/artifact-a3.jpg" alt="" /></span>
+            <span class="gc-box-name">法 器</span>
+            <span class="gc-box-cost">仙玉 <b id="gc-cost-artifact">12</b> / 次</span>
+          </button>
+          <button class="gc-box" data-gc-tab="disciple">
+            <span class="gc-box-art"><img src="./assets/disciple-c1.jpg" alt="" /></span>
+            <span class="gc-box-name">修 士</span>
+            <span class="gc-box-cost">仙玉 <b id="gc-cost-disciple">30</b> / 次</span>
+          </button>
+        </aside>
+
+        <section class="gc-main">
+          <div class="gc-hero">
+            <div class="gc-sigil" aria-hidden="true"></div>
+            <figure class="gc-hero-frame">
+              <img id="gc-hero-img" src="./assets/artifact-a3.jpg" alt="" />
+              <span class="gc-hero-fade" aria-hidden="true"></span>
+              <i id="gc-hero-seal" class="gc-hero-seal">法</i>
+            </figure>
+            <div class="gc-hero-caption">
+              <b id="gc-hero-name">法器祈愿</b>
+              <span id="gc-hero-desc">仙玉 12 / 次 · 从未入藏的法器中随机得一件</span>
+            </div>
+          </div>
+          <div class="gc-main-foot">
+            <button class="gc-pull one" id="gc-pull-1">
+              单 抽<b>仙玉 <span id="gc-cost-one">12</span></b>
+            </button>
+            <button class="gc-pull ten" id="gc-pull-10">
+              十 连<b>仙玉 <span id="gc-cost-ten">120</span></b>
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <label class="gc-skip">
+        <input id="gc-skip-toggle" type="checkbox" />
+        <span>跳过动画</span>
+      </label>
+
+      <!-- 抽卡动画层 -->
+      <div id="gc-draw" class="gc-draw hidden">
+        <div class="gc-draw-veil" aria-hidden="true"></div>
+        <div id="gc-flash" class="gc-flash" aria-hidden="true"></div>
+        <div class="gc-ritual" aria-hidden="true">
+          <span class="gc-ring r1"></span>
+          <span class="gc-ring r2"></span>
+          <span class="gc-ring r3"></span>
+          <span class="gc-rune r1">乾</span>
+          <span class="gc-rune r2">坤</span>
+          <span class="gc-rune r3">震</span>
+          <span class="gc-rune r4">巽</span>
+          <span class="gc-rune r5">坎</span>
+          <span class="gc-rune r6">离</span>
+          <span class="gc-rune r7">艮</span>
+          <span class="gc-rune r8">兑</span>
+          <span class="gc-core"><i>祈</i></span>
+        </div>
+        <div id="gc-draw-cards" class="gc-cards"></div>
+        <div id="gc-draw-tip" class="gc-draw-tip">天 机 流 转 · 缘 法 将 至</div>
+        <button id="gc-draw-skip" class="gc-draw-skip">跳 过 动 画</button>
+      </div>
+
+      <!-- 抽取结果层 -->
+      <div id="gc-result" class="gc-result hidden">
+        <header class="gc-result-head">
+          <div class="gc-result-title">
+            <i>得</i>
+            <div><h2>祈 愿 所 得</h2><p id="gc-result-sub">所得已在囊中</p></div>
+          </div>
+          <div class="gc-jade" title="剩余仙玉">
+            <i><svg aria-hidden="true"><use href="#ico-jade" /></svg></i>
+            <b id="gc-jade-result">0</b>
+          </div>
+        </header>
+        <div id="gc-result-grid" class="gc-result-grid"></div>
+        <footer class="gc-result-foot">
+          <button id="gc-result-ok" class="gc-rbtn ghost">确 定</button>
+          <button id="gc-result-again" class="gc-rbtn gold">再 抽 十 次<b>仙玉 120</b></button>
+        </footer>
+      </div>
+    </section>
+
+    <!-- 邮件：全屏邮件界面（宗门 / 系统 两个频道 · 左侧列表 · 右侧详情） -->
+    <section id="mail-panel" class="hidden" aria-label="邮件">
+      <div class="mail-mask"></div>
+      <div class="mail-sheet">
+        <header class="mail-head">
+          <div class="mail-title"><i>邮</i><h2>邮 件</h2></div>
+          <nav id="mail-tabs" class="mail-tabs"></nav>
+          <button id="mail-close" class="mail-close" aria-label="关闭">×</button>
+        </header>
+        <div id="mail-body" class="mail-body"></div>
+      </div>
+    </section>
+
+    <!-- 聊天：半屏消息界面（世界 / 城市 / 私聊 · 左侧频道与联系人 · 右侧消息） -->
+    <section id="chat-panel" class="hidden" aria-label="聊天">
+      <div class="chat-mask"></div>
+      <div class="chat-sheet">
+        <aside class="chat-side">
+          <header class="chat-side-head">
+            <i>聊</i>
+            <h2>消 息</h2>
+          </header>
+          <div id="chat-nav" class="chat-nav"></div>
+        </aside>
+        <main class="chat-main">
+          <header class="chat-main-head">
+            <div>
+              <h3 id="chat-title">世界</h3>
+              <span id="chat-sub">全服玩家频道</span>
+            </div>
+            <div class="chat-head-right">
+              <button id="chat-online" class="chat-online hidden">在线道友</button>
+              <button id="chat-close" class="chat-close" aria-label="关闭">×</button>
+            </div>
+          </header>
+          <div id="chat-msgs" class="chat-msgs"></div>
+          <div id="chat-roster" class="chat-roster hidden"></div>
+          <footer class="chat-compose">
+            <input id="chat-panel-input" type="text" maxlength="60" placeholder="道友说点什么…" />
+            <button id="chat-panel-send" class="chat-send">发 送</button>
+          </footer>
+        </main>
+      </div>
+    </section>
+
+    <!-- 个人资料：全屏（左侧身份卡 · 右侧容量与数据 · 底部快捷入口） -->
+    <section id="profile-panel" class="hidden" aria-label="个人资料">
+      <div class="pf-mask"></div>
+      <div class="pf-sheet">
+        <header class="pf-head">
+          <div class="pf-title"><i>录</i><h2>个 人 资 料</h2></div>
+          <button id="pf-close" class="pf-close" aria-label="关闭">×</button>
+        </header>
+        <div id="pf-body" class="pf-body"></div>
+      </div>
+    </section>
+
+    <!-- 修士：全屏名册库（左侧分类 / 顶部计数与排序 / 右侧卡片网格） -->
+    <section id="roster-panel" class="hidden" aria-label="修士名册">
+      <div class="rp-mask"></div>
+      <div class="rp-sheet">
+        <header class="rp-head">
+          <div class="rp-title"><i>修</i><h2>修 士 名 册</h2></div>
+          <div class="rp-count"><em>弟子数</em><b id="rp-count">0</b><span>/ <i id="rp-max">50</i></span></div>
+          <div class="rp-sorts">
+            <button class="rp-sort active" data-sort="power">战力 <em>↓</em></button>
+            <button class="rp-sort" data-sort="talent">资质 <em>↓</em></button>
+          </div>
+          <button id="rp-close" class="rp-close" aria-label="关闭">×</button>
+        </header>
+        <div class="rp-body">
+          <nav class="rp-nav">
+            <button class="rp-tab active" data-role="全部">全部</button>
+            <button class="rp-tab" data-role="剑修">剑修</button>
+            <button class="rp-tab" data-role="体修">体修</button>
+            <button class="rp-tab" data-role="符修">符修</button>
+            <button class="rp-tab" data-role="丹修">丹修</button>
+          </nav>
+          <div id="rp-grid" class="rp-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 法器：全屏法器阁（图鉴 + 详情装备） -->
+    <section id="artifact-panel" class="hidden" aria-label="法器阁">
+      <div class="af-mask"></div>
+      <div class="af-sheet">
+        <header class="af-head">
+          <div class="af-title"><i>器</i><h2>法 器 阁</h2></div>
+          <div class="af-count"><em>法器</em><b id="af-count">0</b><span>/ <i id="af-max">12</i></span></div>
+          <div class="af-sorts">
+            <button id="af-sort" class="af-sort">品阶 <em>↓</em></button>
+          </div>
+          <button id="af-close" class="af-close" aria-label="关闭">×</button>
+        </header>
+        <div class="af-body">
+          <nav class="af-nav">
+            <button class="af-tab active" data-type="飞剑">飞剑</button>
+            <button class="af-tab" data-type="护身">护身</button>
+            <button class="af-tab" data-type="符宝">符宝</button>
+            <button class="af-tab" data-type="灵炉">灵炉</button>
+          </nav>
+          <div class="af-main">
+            <div id="af-grid" class="af-grid"></div>
+            <aside id="af-detail" class="af-detail" aria-live="polite"></aside>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 修士修炼：升级（修为） / 升星（突破境界） -->
+    <section id="disciple-panel" class="hidden" aria-label="修士修炼">
+      <div class="dp-mask"></div>
+      <div id="dp-sheet" class="dp-sheet"></div>
+    </section>
+
+    <!-- 主城指挥中心：全屏官职排布（总盟主 / 副盟主 / 四大部门） -->
+    <section id="capital-panel" class="hidden" aria-label="主城指挥中心">
+      <div class="cap-mask"></div>
+      <div class="cap-sheet">
+        <header class="cap-head">
+          <div class="cap-kicker">主 城 指 挥 中 心</div>
+          <h2 id="cap-title">青梧掌门</h2>
+          <div id="cap-sect" class="cap-sect">无宗门</div>
+          <button id="cap-close" class="cap-close" aria-label="关闭">×</button>
+        </header>
+        <div class="cap-body">
+          <div id="cap-leaders" class="cap-leaders"></div>
+          <div class="cap-lower">
+            <div id="cap-vice" class="cap-vice"></div>
+            <div id="cap-depts" class="cap-depts"></div>
+          </div>
+        </div>
+        <div id="cap-picker" class="cap-picker hidden">
+          <div class="cap-picker-head">
+            <b id="cap-picker-title">任命</b>
+            <button id="cap-picker-close" class="cap-picker-close" aria-label="关闭任命">×</button>
+          </div>
+          <div class="cap-picker-search">
+            <input id="cap-picker-search" type="text" maxlength="20" placeholder="搜索成员名称" />
+            <i>搜</i>
+          </div>
+          <div id="cap-picker-list" class="cap-picker-list"></div>
+        </div>
+        <footer class="cap-foot">九 霄 共 主 · 万 宗 来 朝</footer>
+      </div>
+    </section>
+
+    <!-- 选中洞府：底部操作条 -->
+    <div id="base-actions" class="hidden">
+      <div class="ba-head">
+        <b id="ba-name">洞府</b>
+        <span id="ba-level" class="ba-chip">Lv.1</span>
+        <i id="ba-defense">减伤 0%</i>
+        <span id="ba-hp" class="ba-hp">12000 / 12000</span>
+      </div>
+      <div class="sel-actions">
+        <button id="ba-relocate" class="sel-btn gold">搬 迁</button>
+        <button id="ba-enter" class="sel-btn">进入洞府</button>
+      </div>
+    </div>
+
+    <!-- 修士操作：选中全部（再点取消）/ 召回当前选中的修士 -->
+    <div id="skill-bar">
+      <button id="btn-select-all" class="squad-tool">选中全部</button>
+      <button id="btn-recall-squad" class="squad-tool">召 回</button>
+    </div>
+
+    <!-- 黑洞搬迁：顶部居中【建造洞府】 -->
+    <div id="relocate-top" class="hidden">
+      <button id="btn-rebuild">建造洞府</button>
+    </div>
+
+    <!-- 黑洞搬迁：发光预留面积下方的【确定】【取消】 -->
+    <div id="relocate-confirm" class="hidden">
+      <span class="rc-tip">拖动发光面积选择洞府新址</span>
+      <div class="rc-btns">
+        <button id="rc-confirm" class="rc-btn gold">确 定</button>
+        <button id="rc-cancel" class="rc-btn ghost">取 消</button>
+      </div>
+    </div>
+
+    <!-- 点空地后的指令浮窗：前往 / 自动攻击 -->
+    <div id="move-choice" class="hidden">
+      <div class="mc-head"><b id="mc-title">部队指令</b></div>
+      <div class="mc-btns">
+        <button id="mc-go" class="mc-btn gold">前 往</button>
+        <button id="mc-roam" class="mc-btn">自动攻击</button>
+        <button id="mc-cancel" class="mc-btn ghost">取 消</button>
+      </div>
+    </div>
+
+    <!-- 村庄信息卡：建造宗门大殿 -->
+    <div id="village-card" class="card hidden">
+      <div class="card-head">
+        <h3 id="vc-name">青石村</h3>
+        <span id="vc-tag" class="vc-tag neutral">中立村庄</span>
+      </div>
+      <p id="vc-desc">村中阡陌交错，灵田无人看管。在此建造宗门大殿，可将此地纳入宗门版图。</p>
+      <div class="wc-progress">
+        <div class="bar"><i id="vc-progress"></i></div>
+        <span id="vc-progress-text">建成宗门大殿后，领土将向四周六边形蔓延</span>
+      </div>
+      <button id="vc-attack" class="gold-btn hidden">攻 打 魔 修 村 庄</button>
+      <button id="vc-build" class="gold-btn">建 造 宗 门 大 殿</button>
+      <button id="vc-build-branch" class="gold-btn ghost hidden">建 造 宗 门 部 落</button>
+      <button id="vc-abandon" class="gold-btn abandon hidden">放 弃 此 地</button>
+    </div>
+
+    <!-- 道友洞府信息卡：查看道友资料 / 攻打 -->
+    <div id="remote-card" class="card hidden">
+      <div class="card-head">
+        <h3 id="rc-name">道友洞府</h3>
+        <span id="rc-tag" class="vc-tag rival">道友洞府</span>
+      </div>
+      <p id="rc-desc">Lv.1 · 战力 0 · 散修</p>
+      <div class="wc-progress">
+        <div class="bar"><i id="rc-progress"></i></div>
+        <span id="rc-progress-text">洞府耐久</span>
+      </div>
+      <button id="rc-info" class="gold-btn ghost">查 看 信 息</button>
+      <button id="rc-attack" class="gold-btn">攻 打 洞 府</button>
+    </div>
+
+    <!-- 主城信息卡：攻打 / 主城指挥中心 -->
+    <div id="capital-card" class="card hidden">
+      <div class="card-head">
+        <h3 id="cc-name">主城</h3>
+        <span id="cc-tag" class="vc-tag rival">魔修占领</span>
+      </div>
+      <p id="cc-desc">魔修盘踞于此，城头魔旗猎猎。</p>
+      <div id="cc-progress-wrap" class="wc-progress hidden">
+        <div class="bar"><i id="cc-progress"></i></div>
+        <span id="cc-progress-text">主城耐久</span>
+      </div>
+      <button id="cc-attack" class="gold-btn">攻 打</button>
+      <button id="cc-build" class="gold-btn hidden">重 建 主 城</button>
+      <button id="cc-command" class="gold-btn hidden">主 城 指 挥 中 心</button>
+    </div>
+
+    <!-- 左侧竖排功能栏 -->
+    <nav id="hud-nav" class="hud">
+      <button data-nav="zoom" title="搜索灵矿">
+        <i>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="nav-search-g" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff2c4" />
+                <stop offset="1" stop-color="#d98d24" />
+              </linearGradient>
+            </defs>
+            <circle cx="10.4" cy="10.4" r="6" fill="rgba(255,214,120,0.2)" stroke="url(#nav-search-g)" stroke-width="2.5" />
+            <circle cx="8.4" cy="8.4" r="1.1" fill="#fffbe8" opacity="0.9" />
+            <path d="M15.2 15.2l4.6 4.6" stroke="#f6c66b" stroke-width="2.7" stroke-linecap="round" />
+          </svg>
+        </i>
+        <span>搜索</span>
+      </button>
+      <button data-nav="world" class="active" title="定位洞府">
+        <i>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="nav-loc-g" x1="0" y1="0" x2="0.4" y2="1">
+                <stop offset="0" stop-color="#9df8cf" />
+                <stop offset="1" stop-color="#1c9c78" />
+              </linearGradient>
+            </defs>
+            <path d="M12 2.6c-3.9 0-7 3-7 6.8 0 5 7 11.9 7 11.9s7-6.9 7-11.9c0-3.8-3.1-6.8-7-6.8z" fill="url(#nav-loc-g)" stroke="#0d6a50" stroke-width="1" />
+            <circle cx="12" cy="9.4" r="2.7" fill="#eafff5" stroke="#0d6a50" stroke-width="0.8" />
+          </svg>
+        </i>
+        <span>定位</span>
+      </button>
+      <button data-nav="mail" title="邮箱">
+        <i>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="nav-mail-g" x1="0" y1="0" x2="0.6" y2="1">
+                <stop offset="0" stop-color="#ffb9a5" />
+                <stop offset="1" stop-color="#d64848" />
+              </linearGradient>
+            </defs>
+            <rect x="2.8" y="5" width="18.4" height="14" rx="2.4" fill="url(#nav-mail-g)" stroke="#8e2a2a" stroke-width="0.9" />
+            <path d="M3.8 6.4l8.2 6.4 8.2-6.4" fill="none" stroke="#fff2e8" stroke-width="1.8" stroke-linejoin="round" />
+            <circle cx="18.4" cy="15.6" r="1.5" fill="#ffd76a" />
+          </svg>
+        </i>
+        <span>邮箱</span><b class="badge-dot"></b>
+      </button>
+      <button data-nav="quest" title="宗门任务">
+        <i>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="nav-quest-g" x1="0" y1="0" x2="0.6" y2="1">
+                <stop offset="0" stop-color="#bcd9ff" />
+                <stop offset="1" stop-color="#3f77d6" />
+              </linearGradient>
+            </defs>
+            <rect x="4.8" y="3.6" width="14.4" height="16.8" rx="2.2" fill="url(#nav-quest-g)" stroke="#264f9e" stroke-width="0.9" />
+            <path d="M8.2 8.4h7.6M8.2 11.8h7.6M8.2 15.2h4.6" stroke="#eef5ff" stroke-width="1.4" stroke-linecap="round" opacity="0.85" />
+            <path d="M14.4 3.6v6l1.8-1.3 1.8 1.3v-6z" fill="#ffd76a" stroke="#b8862a" stroke-width="0.6" stroke-linejoin="round" />
+          </svg>
+        </i>
+        <span>任务</span><b class="badge-dot"></b>
+      </button>
+    </nav>
+
+    <!-- 左下：世界聊天 -->
+    <div id="world-chat">
+      <div class="chat-head">
+        <span id="mini-chat-city"><i class="status-dot"></i>第 1 服 · 第 1 城</span>
+        <button id="chat-fold" aria-label="展开聊天" title="展开聊天">⤢</button>
+      </div>
+      <div id="chat-list"></div>
+    </div>
+
+    <!-- 右下：核心操作卡片 -->
+    <div id="action-cards">
+      <button class="act-card" data-card="artifact">
+        <svg class="ac-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="ac-art-g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#fff6cf" />
+              <stop offset="0.55" stop-color="#f2c765" />
+              <stop offset="1" stop-color="#c4831f" />
+            </linearGradient>
+          </defs>
+          <path d="M12 2.2l2.5 4.4v8.4H9.5V6.6z" fill="url(#ac-art-g)" stroke="#8a5a12" stroke-width="1" stroke-linejoin="round" />
+          <rect x="6.4" y="15.1" width="11.2" height="2.4" rx="1.2" fill="#d98f2b" stroke="#8a5a12" stroke-width="0.8" />
+          <rect x="10.9" y="17.5" width="2.2" height="4.2" rx="1.1" fill="#a86a19" />
+          <circle cx="12" cy="21.7" r="1.4" fill="#f7e0a4" stroke="#8a5a12" stroke-width="0.7" />
+        </svg>
+        <span class="ac-name">法器</span>
+      </button>
+      <button class="act-card" data-card="roster">
+        <svg class="ac-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="ac-disc-g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#d7fff3" />
+              <stop offset="0.55" stop-color="#5fe0c0" />
+              <stop offset="1" stop-color="#1f8f78" />
+            </linearGradient>
+          </defs>
+          <circle cx="12" cy="6.2" r="3.4" fill="#d7efe6" stroke="#2c6b5c" stroke-width="1" />
+          <path d="M12 10.2c4.1 0 6.7 2.7 6.7 6.3V21H5.3v-4.5c0-3.6 2.6-6.3 6.7-6.3z" fill="url(#ac-disc-g)" stroke="#2c6b5c" stroke-width="1" stroke-linejoin="round" />
+        </svg>
+        <span class="ac-name">修士</span>
+      </button>
+      <button class="act-card" data-card="sect">
+        <svg class="ac-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="ac-sect-g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffdcb4" />
+              <stop offset="0.5" stop-color="#ef8b52" />
+              <stop offset="1" stop-color="#b8432a" />
+            </linearGradient>
+          </defs>
+          <path d="M2.8 9.4L12 3l9.2 6.4z" fill="url(#ac-sect-g)" stroke="#7d2c18" stroke-width="1" stroke-linejoin="round" />
+          <rect x="5.4" y="10.3" width="13.2" height="9.9" rx="1" fill="url(#ac-sect-g)" stroke="#7d2c18" stroke-width="1" />
+          <rect x="10.3" y="13.9" width="3.4" height="6.3" rx=".8" fill="#5c1c10" />
+          <rect x="3.4" y="20.2" width="17.2" height="1.8" rx=".9" fill="#8f3520" />
+        </svg>
+        <span class="ac-name">宗门</span>
+      </button>
+      <button class="act-card" data-card="squad">
+        <svg class="ac-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <defs>
+            <linearGradient id="ac-team-g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e2e3ff" />
+              <stop offset="0.5" stop-color="#8f96f0" />
+              <stop offset="1" stop-color="#4b4fb0" />
+            </linearGradient>
+          </defs>
+          <circle cx="4.7" cy="8.2" r="2.1" fill="#b9bef8" stroke="#3b3f8f" stroke-width=".8" />
+          <path d="M4.7 11c2.2 0 3.5 1.4 3.5 3.5v6H1.2v-6c0-2.1 1.3-3.5 3.5-3.5z" fill="url(#ac-team-g)" stroke="#3b3f8f" stroke-width=".8" stroke-linejoin="round" opacity=".8" />
+          <circle cx="19.3" cy="8.2" r="2.1" fill="#b9bef8" stroke="#3b3f8f" stroke-width=".8" />
+          <path d="M19.3 11c2.2 0 3.5 1.4 3.5 3.5v6h-7v-6c0-2.1 1.3-3.5 3.5-3.5z" fill="url(#ac-team-g)" stroke="#3b3f8f" stroke-width=".8" stroke-linejoin="round" opacity=".8" />
+          <circle cx="12" cy="6" r="3" fill="#dfe1ff" stroke="#3b3f8f" stroke-width=".9" />
+          <path d="M12 9.7c3.3 0 5.4 2.2 5.4 5.2V21H6.6v-6.1c0-3 2.1-5.2 5.4-5.2z" fill="url(#ac-team-g)" stroke="#3b3f8f" stroke-width=".9" stroke-linejoin="round" />
+        </svg>
+        <span class="ac-name">队伍</span>
+      </button>
+    </div>
+
+    <!-- 点矿后浮出的「派遣」入口 -->
+    <div id="mine-action" class="hidden">
+      <button id="mine-action-btn" aria-label="派遣矿队"><i>队</i><span>派遣</span></button>
+    </div>
+
+    <!-- 派遣矿队小面板：选一支矿队，确认后出发 -->
+    <div id="mine-dispatch" class="hidden">
+      <div class="md-mask"></div>
+      <div class="md-sheet">
+        <header class="md-head">
+          <span class="md-title">派 遣</span>
+          <span id="md-target" class="md-target"></span>
+          <button id="md-close" class="md-close" aria-label="关闭">×</button>
+        </header>
+        <div id="md-teams" class="md-teams"></div>
+        <div id="md-meta" class="md-meta"></div>
+        <button id="md-go" class="md-go" disabled>派 遣</button>
+      </div>
+    </div>
+
+    <div id="panel" class="hidden">
+      <div class="panel-mask"></div>
+      <div class="panel-inner">
+        <div class="panel-orn top"></div>
+        <h2 id="panel-title">面板</h2>
+        <button id="panel-close" class="panel-close">×</button>
+        <div id="panel-body"></div>
+      </div>
+    </div>
+
+    <!-- 宗门（联盟）全屏面板：宗门信息 / 成员列表 / 宗门管理 -->
+    <section id="sect-panel" class="hidden" aria-label="宗门">
+      <div class="sect-backdrop"></div>
+      <div class="sect-shell">
+        <aside class="sect-tabs">
+          <div class="sect-brand">
+            <div class="sect-emblem" id="sect-brand-emblem"></div>
+            <div class="sect-brand-meta">
+              <b id="sect-brand-name">未立宗门</b>
+              <span id="sect-brand-sub">九霄一服</span>
+            </div>
+          </div>
+          <div class="sect-tab-list">
+            <button class="sect-tab active" data-sect-tab="info">
+              <span>宗门信息</span>
+            </button>
+            <button class="sect-tab" data-sect-tab="members"><span>成员列表</span></button>
+            <button class="sect-tab" data-sect-tab="manage">
+              <span>宗门管理</span><b class="sect-badge" id="sect-tab-badge">4</b>
+            </button>
+          </div>
+          <div class="sect-tab-foot">
+            <div class="sect-role-chip" id="sect-role-chip">宗主<em>全资源 +10%</em></div>
+            <button class="sect-leave-mini" id="sect-quick-leave">退出宗门</button>
+          </div>
+        </aside>
+        <main class="sect-main">
+          <header class="sect-head">
+            <div class="sect-head-title">
+              <h2 id="sect-head-title">宗门信息</h2>
+              <p id="sect-head-sub">宗门概览 · 职务加成 · 功能入口</p>
+            </div>
+            <button class="sect-close" id="sect-close" aria-label="关闭宗门面板">×</button>
+          </header>
+          <div class="sect-content" id="sect-content"></div>
+        </main>
+      </div>
+      <!-- 互不侵犯盟约：全屏页（已签约 / 已发出邀请 / 已收到邀请） -->
+      <div id="pact-screen" class="hidden" aria-label="互不侵犯盟约">
+        <header class="pact-head">
+          <button class="pact-back" data-pact="close" aria-label="返回宗门">‹</button>
+          <div class="pact-head-title">
+            <i>盟</i>
+            <div>
+              <h2>互不侵犯盟约</h2>
+              <p>限时 7 天 · 双方同意后生效 · 撕毁后 2 小时内不可攻击</p>
+            </div>
+          </div>
+          <div class="pact-summary">
+            <span><b id="pact-num-signed">0</b>生效中</span>
+            <span><b id="pact-num-out">0</b>已发出</span>
+            <span><b id="pact-num-in">0</b>待回应</span>
+          </div>
+        </header>
+        <div class="pact-main">
+          <nav class="pact-tabs" id="pact-tabs">
+            <button class="pact-tab active" data-pact-tab="signed"><span>已签约</span><b>0</b></button>
+            <button class="pact-tab" data-pact-tab="out"><span>已发出邀请</span><b>0</b></button>
+            <button class="pact-tab" data-pact-tab="in"><span>已收到邀请</span><b>0</b></button>
+          </nav>
+          <section class="pact-body" id="pact-body"></section>
+        </div>
+        <footer class="pact-foot">
+          <button class="pact-invite" data-pact="invite"><i>盟</i>邀请签订盟约</button>
+        </footer>
+        <div class="pact-picker hidden" id="pact-picker"></div>
+      </div>
+      <div class="sect-dialog hidden" id="sect-dialog"></div>
+    </section>
+
+    <!-- 宗门入口：未入宗时的加入 / 创建 / 查看他宗 -->
+    <section id="sect-gate" class="hidden" aria-label="宗门入口">
+      <div class="sg-mask"></div>
+      <div class="sg-sheet">
+        <header class="sg-head">
+          <div class="sg-title">
+            <i>盟</i>
+            <h2 id="sg-head-title">宗 门</h2>
+            <p id="sg-head-sub">加入宗门或创建宗门</p>
+          </div>
+          <button id="sg-close" class="sg-close" aria-label="关闭">×</button>
+        </header>
+        <div id="sg-body" class="sg-body"></div>
+      </div>
+    </section>
+
+    <div id="result" class="hidden">
+      <div class="result-inner">
+        <div class="result-seal" id="res-seal">胜</div>
+        <h1 id="res-title">夺枢成功</h1>
+        <div id="res-body"></div>
+        <div id="res-actions"></div>
+      </div>
+    </div>
+
+    <!-- 登录页：大标题 + 服务器条 + 进入游戏（仿参考 UI） -->
+    <section id="login-screen" aria-label="登录">
+      <div class="lg-top">
+        <span class="lg-version" id="lg-version">v1.0.0 · 1 服</span>
+      </div>
+
+      <div class="lg-hero">
+        <h1 class="lg-title">九霄夺城</h1>
+        <p class="lg-sub">九 域 争 锋 · 夺 城 而 立</p>
+
+        <div class="lg-server" id="lg-server" role="button" tabindex="0" title="选择城市">
+          <i class="lg-gem"></i>
+          <div class="lg-server-meta">
+            <b id="lg-server-name">服务器 1 · 九霄城</b>
+            <span id="lg-server-sub">#10001 · 开服 00天00时</span>
+          </div>
+          <button id="lg-server-switch" class="lg-switch" aria-label="选择城市">换</button>
+        </div>
+
+        <button id="lg-enter" class="lg-enter">进 入 游 戏</button>
+        <p class="lg-tip" id="lg-tip">选定城市后角色将永久定居，城市不会随时间更换</p>
+        <button id="lg-story" class="lg-story" type="button">重 温 序 章</button>
+      </div>
+
+      <div class="lg-bottom">
+        <p class="lg-legal">健康游戏忠告：抵制不良游戏，拒绝盗版游戏。注意自我保护，谨防受骗上当。适度游戏益脑，沉迷游戏伤身。</p>
+        <span class="lg-age">16+</span>
+      </div>
+    </section>
+
+    <!-- 选择城市：服务器分组 + 城市卡片 + 状态图例（仿参考 UI） -->
+    <section id="city-screen" class="hidden" aria-label="选择城市">
+      <header class="cs-head">
+        <button id="cs-back" class="cs-back" aria-label="返回登录">←</button>
+        <h2>选择城市</h2>
+        <div class="cs-legend">
+          <span><i class="cs-dot normal"></i>正常</span>
+          <span><i class="cs-dot closed"></i>未开放</span>
+          <span><i class="cs-dot mine"></i>我的城市</span>
+        </div>
+      </header>
+      <div class="cs-body">
+        <aside class="cs-tabs">
+          <button class="cs-tab active" data-tab="reco">推荐</button>
+          <button class="cs-tab" data-tab="all">所有</button>
+        </aside>
+        <div class="cs-main">
+          <p class="cs-note" id="cs-note">选定城市后角色将永远定居于此城，无法更换；每 3 天开放一座新城。</p>
+          <div id="cs-list" class="cs-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <div id="toast"></div>
+
+    <div id="loading">
+      <div class="loading-inner">
+        <h1>九霄夺城</h1>
+        <p>灵气汇聚中……</p>
+        <div class="load-bar"><i></i></div>
+      </div>
+    </div>
+
+    <div id="rotate" class="hidden">
+      <div>
+        <div class="seal">横</div>
+        <p>请将设备横屏，以进入九霄灵域</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 调试/测试入口：地址后加 ?reset=1 会清空本地存档、榜单与序章已读标记，然后回到干净的登录页
+    if (new URLSearchParams(location.search).get('reset') === '1') {
+      ['jiuxiao_save_v4', 'jiuxiao_rank_v1', 'jiuxiao_rank_v2', 'jiuxiao_story_v1', 'jiuxiao_story_v2'].forEach(
+        function (key) {
+          localStorage.removeItem(key);
+        }
+      );
+      location.replace(location.pathname);
+    }
+  </script>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
